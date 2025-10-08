@@ -105,3 +105,14 @@ localStorage is used instead of an actual database due to assignment scope.
 The app is optimized for desktop view (responsiveness not prioritized due to time constraint).
 
 TypeScript was not used for simplicity, as not explicitly required.
+
+Time Spent
+
+| Task                         | Time         |
+| ---------------------------- | ------------ |
+| Setting up Next.js + routing | 1 hour       |
+| Home & Post Details          | 1 hour       |
+| Create + Delete + Favorites  | 2 hours      |
+| API Route + Testing          | 1 hour       |
+| Debugging + Documentation    | 1 hour       |
+| **Total:**                   | **~6 hours** |
