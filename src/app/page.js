@@ -4,38 +4,54 @@ import Link from "next/link";
 import PostCard from "./components/PostCard";
 import SearchBar from "./components/SearchBar";
 import Navbar from "./components/Navbar";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [filtered, setFiltered] = useState([]);
 
-  const fetchPosts = async () => {
-    try {
-      const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-      const data = await res.json();
-      setPosts(data);
-      setFiltered(data);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
 
-  if (posts.length === 0) {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+          signal,
+        });
+        const data = await res.json();
+        setPosts(data);
+        setFiltered(data);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Error fetching posts:", error);
+        }
+      }
+    };
+
     fetchPosts();
-  }
+
+    // Cleanup function: cancel fetch if component unmounts
+    return () => {
+      controller.abort();
+    };
+  }, []); // only runs once after mount
 
   const handleSearch = (query) => {
     if (!query) setFiltered(posts);
-    else setFiltered(posts.filter((p) => p.title.toLowerCase().includes(query)));
+    else
+      setFiltered(
+        posts.filter((p) =>
+          p.title.toLowerCase().includes(query.toLowerCase())
+        )
+      );
   };
 
   return (
     <main>
-      <Navbar/>
+      <Navbar />
       <h1>Blog Dashboard 📰</h1>
-      
+
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <Link
           href="/create"

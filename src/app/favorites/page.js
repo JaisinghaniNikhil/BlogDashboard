@@ -10,37 +10,46 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [filtered, setFiltered] = useState([]);
 
-  // Fetch posts after component mounts
   useEffect(() => {
-    let isMounted = true; // flag to check if component is still mounted
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     const fetchPosts = async () => {
       try {
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+          signal,
+        });
         const data = await res.json();
-        if (isMounted) { // only update state if component is mounted
-          setPosts(data);
-          setFiltered(data);
-        }
+        setPosts(data);
+        setFiltered(data);
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        if (error.name === "AbortError") {
+          // Request was aborted
+          console.log("Fetch aborted");
+        } else {
+          console.error("Error fetching posts:", error);
+        }
       }
     };
 
     fetchPosts();
 
-    // Cleanup function sets isMounted to false
+    // Cleanup: abort fetch on unmount
     return () => {
-      isMounted = false;
+      controller.abort();
     };
-  }, []); // empty dependency array → runs only once after mount
+  }, []);
 
   const handleSearch = (query) => {
-    if (!query) setFiltered(posts);
-    else
+    if (!query) {
+      setFiltered(posts);
+    } else {
       setFiltered(
-        posts.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
+        posts.filter((p) =>
+          p.title.toLowerCase().includes(query.toLowerCase())
+        )
       );
+    }
   };
 
   return (
@@ -76,7 +85,6 @@ export default function Home() {
     </main>
   );
 }
-
 
 const styles = {
   card: {
