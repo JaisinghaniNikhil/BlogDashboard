@@ -1,86 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import PostCard from "../components/PostCard";
-import SearchBar from "../components/SearchBar";
-import Navbar from "../components/Navbar";
-import { useState, useEffect } from "react";
 
-export default function Favourites() {
-  const [posts, setPosts] = useState([]);
-  const [filtered, setFiltered] = useState([]);
+export default function Favorites() {
+  const [favorites, setFavorites] = useState([]);
 
+  // Load favorites from localStorage
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-          signal,
-        });
-        const data = await res.json();
-        setPosts(data);
-        setFiltered(data);
-      } catch (error) {
-        if (error.name === "AbortError") {
-
-          console.log("Fetch aborted");
-        } else {
-          console.error("Error fetching posts:", error);
-        }
-      }
-    };
-
-    fetchPosts();
-
-    return () => {
-      controller.abort();
-    };
+    const favs = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(favs);
   }, []);
 
-  const handleSearch = (query) => {
-    if (!query) {
-      setFiltered(posts);
-    } else {
-      setFiltered(
-        posts.filter((p) =>
-          p.title.toLowerCase().includes(query.toLowerCase())
-        )
-      );
-    }
+  const handleRemove = (id) => {
+    const updated = favorites.filter((post) => post.id !== id);
+    setFavorites(updated);
+    localStorage.setItem("favorites", JSON.stringify(updated));
   };
 
   return (
     <main>
-      <Navbar />
-      <h1>Blog Dashboard 📰</h1>
+      <Link href="/">← Back to Home</Link>
+      <h1 style={{ color: "#0070f3" }}>⭐ Favorite Posts</h1>
 
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <Link
-          href="/create"
-          style={{
-            backgroundColor: "#0070f3",
-            color: "white",
-            padding: "10px 15px",
-            borderRadius: "6px",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
-        >
-          + Create New Post
-        </Link>
-      </div>
-
-      <SearchBar onSearch={handleSearch} />
-
-      <div>
-        {filtered.length === 0 ? (
-          <p>No posts found...</p>
-        ) : (
-          filtered.map((post) => <PostCard key={post.id} post={post} />)
-        )}
-      </div>
+      {favorites.length === 0 ? (
+        <p>No favorite posts yet.</p>
+      ) : (
+        favorites.map((post) => (
+          <div key={post.id} style={styles.card}>
+            <h3>{post.title}</h3>
+            <p>{post.body}</p>
+            <button onClick={() => handleRemove(post.id)} style={styles.btn}>
+              ❌ Remove
+            </button>
+          </div>
+        ))
+      )}
     </main>
   );
 }
