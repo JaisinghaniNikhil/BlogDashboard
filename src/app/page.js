@@ -1,16 +1,42 @@
-import Link from "next/link";
+"use client";
 
-// ✅ This is now a SERVER COMPONENT (SSR)
-export default async function Home() {
-  // Fetch posts server-side
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-  const posts = await res.json();
+import Link from "next/link";
+import PostCard from "./components/PostCard";
+import SearchBar from "./components/SearchBar";
+import Navbar from "./components/Navbar";
+import { useState } from "react";
+
+
+export default function Home() {
+  const [posts, setPosts] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+      const data = await res.json();
+      setPosts(data);
+      setFiltered(data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
+  if (posts.length === 0) {
+    fetchPosts();
+  }
+
+  const handleSearch = (query) => {
+    if (!query) setFiltered(posts);
+    else setFiltered(posts.filter((p) => p.title.toLowerCase().includes(query)));
+  };
 
   return (
     <main>
+      <Navbar/>
       <h1>Blog Dashboard 📰</h1>
 
-      {/* Create Post Button */}
+      {/* ✅ Add Create Post Button */}
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <Link
           href="/create"
@@ -27,33 +53,14 @@ export default async function Home() {
         </Link>
       </div>
 
-      {/* Posts Listing */}
+      <SearchBar onSearch={handleSearch} />
+
       <div>
-        {posts.slice(0, 10).map((post) => ( // Limit to 10 for cleaner UI
-          <div
-            key={post.id}
-            style={{
-              background: "#fff",
-              padding: "15px",
-              margin: "10px 0",
-              borderRadius: "8px",
-              boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <h3>{post.title}</h3>
-            <p>{post.body.slice(0, 100)}...</p>
-            <Link
-              href={`/posts/${post.id}`}
-              style={{
-                textDecoration: "none",
-                color: "#0070f3",
-                fontWeight: "bold",
-              }}
-            >
-              Read More →
-            </Link>
-          </div>
-        ))}
+        {filtered.length === 0 ? (
+          <p>No posts found...</p>
+        ) : (
+          filtered.map((post) => <PostCard key={post.id} post={post} />)
+        )}
       </div>
     </main>
   );
