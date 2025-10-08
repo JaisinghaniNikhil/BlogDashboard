@@ -31,11 +31,10 @@ export default function Home() {
 
     fetchPosts();
 
-    // Cleanup function: cancel fetch if component unmounts
     return () => {
       controller.abort();
     };
-  }, []); // only runs once after mount
+  }, []);
 
   const handleSearch = (query) => {
     if (!query) setFiltered(posts);

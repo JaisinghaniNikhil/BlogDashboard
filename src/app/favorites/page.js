@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 
-export default function Home() {
+export default function Favourites() {
   const [posts, setPosts] = useState([]);
   const [filtered, setFiltered] = useState([]);
 
@@ -24,7 +24,7 @@ export default function Home() {
         setFiltered(data);
       } catch (error) {
         if (error.name === "AbortError") {
-          // Request was aborted
+
           console.log("Fetch aborted");
         } else {
           console.error("Error fetching posts:", error);
@@ -34,7 +34,6 @@ export default function Home() {
 
     fetchPosts();
 
-    // Cleanup: abort fetch on unmount
     return () => {
       controller.abort();
     };
