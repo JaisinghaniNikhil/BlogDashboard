@@ -116,3 +116,26 @@ Time Spent
 | API Route + Testing          | 1 hour       |
 | Debugging + Documentation    | 1 hour       |
 | **Total:**                   | **~6 hours** |
+
+
+Deployment
+
+This project is deployed using Vercel.
+👉 Live Link: https://blog-dashboard-lake-pi.vercel.app/
+
+ScreenShots
+Home - https://drive.google.com/file/d/1zwgTHXMuWMZlhbezfIsaiL9sakYvUKZ1/view?usp=sharing
+
+Search - https://drive.google.com/file/d/1ZeB99xYF_W_fZUADo66-KQAKPJqlVy3B/view?usp=sharing
+
+Create-Post - https://drive.google.com/file/d/1-UMRw3r-CR0lpaqamjYwKvQ0KY1BVdVB/view?usp=sharing
+
+Delete-Post - https://drive.google.com/file/d/1vxU4Sk2mgPuCQKSSvsGoyzL9w5bLZXnh/view?usp=sharing
+
+Favourites - https://drive.google.com/file/d/1AMc9s5EZec6bClKK5w2e9venxQAf6gbC/view?usp=sharing
+
+Author
+
+Nikhil Jaisinghani
+📧 Email: nikhiljaisinghani30@gmail.com
+🌍 GitHub: https://github.com/JaisinghaniNikhil/BlogDashboard
