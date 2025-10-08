@@ -5,25 +5,28 @@ import Link from "next/link";
 import "./PostCard.css";
 
 export default function PostCard({ post }) {
-  const [favorites, setFavorites] = useState([]);
   const [isFav, setIsFav] = useState(false);
 
+  // Check if this post is already in favorites on mount
   useEffect(() => {
     const favs = JSON.parse(localStorage.getItem("favorites")) || [];
-    setFavorites(favs);
     setIsFav(favs.some((p) => p.id === post.id));
   }, [post.id]);
 
   const toggleFavorite = () => {
+    const favs = JSON.parse(localStorage.getItem("favorites")) || [];
     let updated;
+
     if (isFav) {
-      updated = favorites.filter((p) => p.id !== post.id);
+      // Remove from favorites
+      updated = favs.filter((p) => p.id !== post.id);
     } else {
-      updated = [...favorites, post];
+      // Add to favorites (avoid duplicates just in case)
+      const alreadyExists = favs.some((p) => p.id === post.id);
+      updated = alreadyExists ? favs : [...favs, post];
     }
 
     localStorage.setItem("favorites", JSON.stringify(updated));
-    setFavorites(updated);
     setIsFav(!isFav);
   };
 
@@ -38,7 +41,7 @@ export default function PostCard({ post }) {
         </Link>
 
         <button onClick={toggleFavorite} className="fav-btn">
-          {isFav ? " Added To Favourites" : "☆ Add to Favourites"}
+          {isFav ? "✅ Added to Favorites" : "☆ Add to Favorites"}
         </button>
       </div>
     </div>
