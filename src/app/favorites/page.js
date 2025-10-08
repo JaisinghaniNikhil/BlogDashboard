@@ -12,23 +12,35 @@ export default function Home() {
 
   // Fetch posts after component mounts
   useEffect(() => {
+    let isMounted = true; // flag to check if component is still mounted
+
     const fetchPosts = async () => {
       try {
         const res = await fetch("https://jsonplaceholder.typicode.com/posts");
         const data = await res.json();
-        setPosts(data);
-        setFiltered(data);
+        if (isMounted) { // only update state if component is mounted
+          setPosts(data);
+          setFiltered(data);
+        }
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
     };
 
     fetchPosts();
+
+    // Cleanup function sets isMounted to false
+    return () => {
+      isMounted = false;
+    };
   }, []); // empty dependency array → runs only once after mount
 
   const handleSearch = (query) => {
     if (!query) setFiltered(posts);
-    else setFiltered(posts.filter((p) => p.title.toLowerCase().includes(query.toLowerCase())));
+    else
+      setFiltered(
+        posts.filter((p) => p.title.toLowerCase().includes(query.toLowerCase()))
+      );
   };
 
   return (
@@ -64,6 +76,7 @@ export default function Home() {
     </main>
   );
 }
+
 
 const styles = {
   card: {
