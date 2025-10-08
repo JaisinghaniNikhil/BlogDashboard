@@ -1,95 +1,60 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
 
-export default function Home() {
+// ✅ This is now a SERVER COMPONENT (SSR)
+export default async function Home() {
+  // Fetch posts server-side
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const posts = await res.json();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main>
+      <h1>Blog Dashboard 📰</h1>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Create Post Button */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <Link
+          href="/create"
+          style={{
+            backgroundColor: "#0070f3",
+            color: "white",
+            padding: "10px 15px",
+            borderRadius: "6px",
+            textDecoration: "none",
+            fontWeight: "bold",
+          }}
+        >
+          + Create New Post
+        </Link>
+      </div>
+
+      {/* Posts Listing */}
+      <div>
+        {posts.slice(0, 10).map((post) => ( // Limit to 10 for cleaner UI
+          <div
+            key={post.id}
+            style={{
+              background: "#fff",
+              padding: "15px",
+              margin: "10px 0",
+              borderRadius: "8px",
+              boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+            }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <h3>{post.title}</h3>
+            <p>{post.body.slice(0, 100)}...</p>
+            <Link
+              href={`/posts/${post.id}`}
+              style={{
+                textDecoration: "none",
+                color: "#0070f3",
+                fontWeight: "bold",
+              }}
+            >
+              Read More →
+            </Link>
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }
