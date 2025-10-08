@@ -83,7 +83,7 @@ components/
 
 ```bash
 # 1 Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/JaisinghaniNikhil/BlogDashboard
 cd blog-dashboard
 
 # 2 Install dependencies
