@@ -3,7 +3,7 @@
 import Link from "next/link";
 import PostCard from "../components/PostCard";
 import SearchBar from "../components/SearchBar";
-import Navbar from "./components/Navbar";
+import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 
 export default function Home() {
